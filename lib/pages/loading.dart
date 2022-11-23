@@ -18,18 +18,13 @@ class _LoadingState extends State<Loading> {
     });
   }
 
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    getMovieData();
-  }
-
   @override
   Widget build(BuildContext context) {
+    getMovieData();
     return Scaffold(
-      body: Text('Loading screen'),
+      body: Center(
+          child: CircularProgressIndicator()),
+          backgroundColor: Colors.grey[900],
     );
   }
 }

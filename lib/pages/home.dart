@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -13,10 +13,15 @@ class _HomeState extends State<Home> {
   late String posterURL = 'https://image.tmdb.org/t/p/w500/gajva2L0rPYkEWjzgFlBXCAVBE5.jpg';
   late String movieTitle = 'Blade Runner 2049';
 
-  Map apidata = {};
+  Map apidata = {}; // stores the title and poster url to initialize the variables above
+
 
   @override
   Widget build(BuildContext context) {
+
+
+    final CollectionReference _topmovies = FirebaseFirestore.instance.collection('topmovies');
+    print(_topmovies.snapshots());
 
     apidata = ModalRoute.of(context)!.settings.arguments as Map;
     movieTitle = apidata["title"];
@@ -44,69 +49,76 @@ class _HomeState extends State<Home> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Image(image: NetworkImage(
-              //'https://m.media-amazon.com/images/M/MV5BNzA1Njg4NzYxOV5BMl5BanBnXkFtZTgwODk5NjU3MzI@._V1_.jpg'
-              posterURL
-            )
-          ),
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 0.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  MaterialButton(
-                    onPressed: () async {      //api.themoviedb.org/3/movie/550?api_key=832757608aeb36e2f0ad08dcf9b3bfd4
-                      var url = Uri.https('api.themoviedb.org', '/3/movie/550', {'api_key' : '832757608aeb36e2f0ad08dcf9b3bfd4'});
-                      var response = await http.get(url);
-                      print('URL: $url');
-                      print('Response status: ${response.statusCode}');
-                      print('Response body: ${response.body}');
-                      print('You did not like this movie');
-                    },
-                    color: Colors.red,
-                    padding: EdgeInsets.all(8.0),
-                    shape: CircleBorder(),
-                    child: const Icon(
-                      Icons.thumb_down_sharp,
-                      color: Colors.white,
-                      size: 60.0,
-                    ),
-                  ),
-                  Text(
-                    movieTitle,      // Filler data
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22.0
-                    ),
-
-                  ),
-                  MaterialButton(
-                    onPressed: () async {      //api.themoviedb.org/3/movie/550?api_key=832757608aeb36e2f0ad08dcf9b3bfd4
-                      var url = Uri.https('api.themoviedb.org', '/3/movie/550', {'api_key' : '832757608aeb36e2f0ad08dcf9b3bfd4'});
-                      var response = await http.get(url);
-                      print('URL: $url');
-                      print('Response status: ${response.statusCode}');
-                      print('Response body: ${response.body}');
-                      print('You liked this movie');
-                    },
-                    color: Colors.green,
-                    padding: EdgeInsets.all(8.0),
-                    shape: CircleBorder(),
-                    child: Icon(
-                      Icons.thumb_up_sharp,
-                      color: Colors.white,
-                      size: 60.0,
-                    ),
-                  ),
-                ],
+      body: StreamBuilder(
+        stream: _topmovies.snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+          return Column(
+            children: [
+              Image(image: NetworkImage(
+                  posterURL
+              )
               ),
-            ),
-          )
+              Expanded(
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 0.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      MaterialButton(
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(context, '/');
+                        },
+                        color: Colors.red,
+                        padding: EdgeInsets.all(8.0),
+                        shape: CircleBorder(),
+                        child: const Icon(
+                          Icons.thumb_down_sharp,
+                          color: Colors.white,
+                          size: 60.0,
+                        ),
+                      ),
+                      Text(
+                        movieTitle,      // Filler data
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 22.0
+                        ),
 
-        ],
+                      ),
+                      MaterialButton(
+                        onPressed: () async {
+                          int newmovie = 1;
+                          // print(documentSnapshot['title']);
+                          for (var i = 0; i < streamSnapshot.data!.docs.length; i++) {
+                            if (streamSnapshot.data!.docs[i]['title'] == movieTitle) {
+                              await _topmovies.doc(streamSnapshot.data!.docs[i].id).update({"title": movieTitle, "score": streamSnapshot.data!.docs[i]['score']+1});
+                              newmovie = 0;
+                            }
+                          }
+                          if (newmovie == 1) {
+                            await _topmovies.add({"title": movieTitle, "score": 1});
+                            newmovie = 0;
+                          }
+                          Navigator.pushReplacementNamed(context, '/');
+                        },
+                        color: Colors.green,
+                        padding: EdgeInsets.all(8.0),
+                        shape: CircleBorder(),
+                        child: Icon(
+                          Icons.thumb_up_sharp,
+                          color: Colors.white,
+                          size: 60.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+
+            ],
+          );
+        }
+
       ),
 
     );

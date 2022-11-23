@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1091911097040",
+    "project_id": "moviego-17ffb",
+    "storage_bucket": "moviego-17ffb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1091911097040:android:c684e01d40be1864a6dcd5",
+        "android_client_info": {
+          "package_name": "com.example.moviego"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1091911097040-bbl007jmp6vm69fqsmhv1ne36i9pi2bo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7ySUhEooc9pTiYan0-p4HvPXcWK9yiNg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1091911097040-bbl007jmp6vm69fqsmhv1ne36i9pi2bo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
