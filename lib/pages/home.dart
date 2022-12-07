@@ -77,13 +77,19 @@ class _HomeState extends State<Home> {
                           size: 60.0,
                         ),
                       ),
-                      Text(
-                        movieTitle,      // Filler data
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22.0
+                      SizedBox(
+                        width: 235,
+                        child: Text(
+                          movieTitle,      // fetched from the API
+                          // "this is very very very very very very very very long text",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 22.0
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
                         ),
-
                       ),
                       MaterialButton(
                         onPressed: () async {

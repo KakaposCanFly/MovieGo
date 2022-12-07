@@ -31,22 +31,27 @@ class _ScoreBoardState extends State<ScoreBoard> {
         builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
           if (streamSnapshot.hasData) {
             return ListView.builder(
+              padding: EdgeInsets.only(top: 4),
               itemCount: streamSnapshot.data!.docs.length,
               itemBuilder: (context, index) {
                 final DocumentSnapshot documentSnapshot = streamSnapshot.data!.docs[index];
                 return Card(
-                  color: Colors.grey[700],
-                  margin: const EdgeInsets.all(10),
+                  color: Colors.grey[850],
+                  margin: const EdgeInsets.all(6),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget> [
                         Padding(
                           padding: EdgeInsets.all(10),
-                          child: Text(
-                            documentSnapshot['title'],
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 32.0
+                          child: SizedBox(
+                            width: 290,
+                            child: Text(
+                              documentSnapshot['title'],
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 30.0
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ),
@@ -56,7 +61,7 @@ class _ScoreBoardState extends State<ScoreBoard> {
                             documentSnapshot['score'].toString(),
                             style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 32.0
+                                fontSize: 24.0
                             ),
                           ),
                         ),
